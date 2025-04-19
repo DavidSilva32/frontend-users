@@ -40,6 +40,7 @@ export default function Register() {
       if (!response.ok) {
         const errorData = await response.json();
         toast.error(errorData.message || "Registration failed");
+        console.error("Registration error:", errorData);
         return;
       }
 

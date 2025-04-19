@@ -1,12 +1,9 @@
+import { ApiResponse, User } from "@/types";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
-  interface User {
-    name: string;
-    email: string;
-  }
-
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
@@ -23,9 +20,10 @@ export default function Profile() {
         },
       })
         .then((response) => response.json())
-        .then((data) => setUser(data))
+        .then((ApiResponse: ApiResponse<User>) => {setUser(ApiResponse.data)})
         .catch((error) => {
-          console.error("Erro ao carregar perfil:", error);
+            toast.error(error instanceof Error ? error.message : "Unexpected error");
+            console.error("Error fetching user profile:", error);
         });
     }
   }, [navigate]);

@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";  // <--- Importa o toast
+import { ApiResponse } from "@/types";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
+  
     try {
       const response = await fetch("http://localhost:3000/login", {
         method: "POST",
@@ -20,16 +20,15 @@ export default function Login() {
         },
         body: JSON.stringify({ email, password }),
       });
-
+  
+      const responseData: ApiResponse<{ token: string }> = await response.json();
+  
       if (!response.ok) {
-        const errorData = await response.json();
-        // Exibe o erro usando o toast
-        toast.error(errorData.message || "Erro no login");
+        toast.error(responseData.message || "Erro no login");
         return;
       }
-
-      const data = await response.json();
-      localStorage.setItem("authToken", data.token);
+  
+      localStorage.setItem("authToken", responseData.data.token);
       navigate("/profile");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro inesperado");
@@ -37,6 +36,7 @@ export default function Login() {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
