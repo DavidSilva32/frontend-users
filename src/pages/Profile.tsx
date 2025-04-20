@@ -1,4 +1,5 @@
-import { ApiResponse, User } from "@/types";
+import { User } from "@/types";
+import { apiRequest } from "@/utils/apiRequest";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -12,40 +13,59 @@ export default function Profile() {
 
     if (!token) {
       navigate("/login");
-    } else {
-      fetch("http://localhost:3000/user/profile", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((ApiResponse: ApiResponse<User>) => {setUser(ApiResponse.data)})
-        .catch((error) => {
-            toast.error(error instanceof Error ? error.message : "Unexpected error");
-            console.error("Error fetching user profile:", error);
-        });
+      return;
     }
+
+    const fetchUserProfile = async () => {
+      try {
+        const data = await apiRequest<User>(
+          "http://localhost:3000/user/profile",
+          "GET",
+          undefined,
+          {
+            Authorization: `Bearer ${token}`,
+          }
+        );
+
+        if (data) {
+          setUser(data);
+        }
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : "Unexpected error"
+        );
+
+        localStorage.removeItem("authToken");
+        navigate("/login");
+      }
+    };
+
+    fetchUserProfile();
   }, [navigate]);
 
-  if (!user) return <div className="text-center mt-8 text-gray-600">Carregando...</div>;
+  if (!user)
+    return <div className="text-center mt-8 text-muted">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8">
-      <div className="bg-white rounded-xl shadow-lg w-full max-w-lg p-8 space-y-6">
-        <h1 className="text-3xl font-bold text-center text-blue-600">Perfil do Usuário</h1>
+    <div className="min-h-screen bg-surface flex items-center justify-center px-4 py-8">
+      <div className="bg-white dark:bg-surface rounded-xl shadow-lg w-full max-w-lg p-8 space-y-6">
+        <h1 className="text-3xl font-bold text-center">User Profile</h1>
         <div className="space-y-4">
-          <p className="text-lg text-gray-700"><span className="font-semibold">Nome:</span> {user.name}</p>
-          <p className="text-lg text-gray-700"><span className="font-semibold">Email:</span> {user.email}</p>
+          <p className="text-lg text-text">
+            <span className="font-semibold">Name:</span> {user.name}
+          </p>
+          <p className="text-lg text-text">
+            <span className="font-semibold">Email:</span> {user.email}
+          </p>
         </div>
         <button
           onClick={() => {
             localStorage.removeItem("authToken");
             navigate("/login");
           }}
-          className="w-full mt-6 bg-red-500 text-white py-2 rounded-xl hover:bg-red-600 transition-colors"
+          className="w-full mt-6 bg-danger text-white py-2 rounded-md hover:bg-danger-hover transition-colors text-sm font-medium"
         >
-          Sair
+          Log Out
         </button>
       </div>
     </div>
