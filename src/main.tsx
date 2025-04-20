@@ -9,7 +9,7 @@ import { Toaster } from "react-hot-toast";
 import "./index.css";
 import UserList from "./pages/userList";
 import { AuthProvider } from "./AuthContext";
-import { Login } from "@mui/icons-material";
+import Login from "./pages/Login";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

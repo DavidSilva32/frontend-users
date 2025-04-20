@@ -4,6 +4,15 @@ import { toast } from "react-hot-toast";
 import { LoginData } from "@/types";
 import { apiRequest } from "@/utils/apiRequest";
 import { endpoints } from "@/utils/endpoints";
+import {
+  TextField,
+  Button,
+  CircularProgress,
+  Box,
+  Typography,
+  Container,
+  Paper,
+} from "@mui/material";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -16,7 +25,10 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const data = await apiRequest<LoginData>(endpoints.login, "POST", { email, password });
+      const data = await apiRequest<LoginData>(endpoints.login, "POST", {
+        email,
+        password,
+      });
 
       if (data) {
         localStorage.setItem("authToken", data.token);
@@ -30,39 +42,56 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-surface p-6 sm:p-8 rounded-2xl shadow-md w-full max-w-md space-y-4"
-      >
-        <h1 className="text-xl sm:text-2xl font-bold text-center">Login</h1>
+    <Container maxWidth="sm">
+      <Paper elevation={3} sx={{ p: 4, mt: 8, borderRadius: 4 }}>
+        <Typography variant="h4" component="h1" align="center" gutterBottom>
+          Login to Your Account
+        </Typography>
 
-        <input
-          type="email"
-          placeholder="E-mail"
-          className="w-full p-3 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <form onSubmit={handleSubmit} noValidate>
+          <Box sx={{ mb: 2 }}>
+            <TextField
+              fullWidth
+              label="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              variant="outlined"
+              required
+            />
+          </Box>
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full p-3 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <Box sx={{ mb: 2 }}>
+            <TextField
+              fullWidth
+              label="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              variant="outlined"
+              required
+            />
+          </Box>
 
-        <button
-          type="submit"
-          className="w-full bg-primary text-white py-2 rounded-md hover:bg-primary-hover transition-colors text-sm font-medium"
-        >
-          {loading && (
-            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-          )}
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
-    </div>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mb: 2 }}
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? (
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <CircularProgress size={24} sx={{ mr: 2 }} />
+                Logging in...
+              </Box>
+            ) : (
+              "Login"
+            )}
+          </Button>
+        </form>
+      </Paper>
+    </Container>
   );
 }
