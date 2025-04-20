@@ -5,6 +5,7 @@ import { endpoints } from "@/utils/endpoints";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { Box, Card, CardContent, CircularProgress, Typography } from "@mui/material";
 
 export default function UserList() {
   const [users, setUsers] = useState<User[]>([]);
@@ -42,28 +43,45 @@ export default function UserList() {
     fetchUsers();
   }, [navigate]);
 
-  if (loading) return <p className="text-center mt-8">Loading...</p>;
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
-    <div className="max-w-4xl mx-auto mt-10 bg-surface p-6 rounded-xl shadow">
-      <h1 className="text-2xl font-bold text-primary mb-6 text-center">
+    <Box sx={{ maxWidth: 1200, margin: "auto", mt: 4, p: 3 }}>
+      <Typography variant="h4" sx={{ fontWeight: "bold", textAlign: "center", mb: 4 }}>
         Lista de Usuários
-      </h1>
-      <ul className="space-y-4">
-        {users.map((user) => (
-          <li
-            key={user.id}
-            className="p-4 bg-background rounded-md border border-border shadow-sm"
-          >
-            <p>
-              <strong>Nome:</strong> {user.name}
-            </p>
-            <p>
-              <strong>Email:</strong> {user.email}
-            </p>
-          </li>
-        ))}
-      </ul>
-    </div>
+      </Typography>
+
+      {users.length > 0 ? (
+        users.map((user) => (
+          <Card key={user.id} sx={{ mb: 2 }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                Nome: {user.name}
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                Email: {user.email}
+              </Typography>
+            </CardContent>
+          </Card>
+        ))
+      ) : (
+        <Typography variant="body1" color="textSecondary" align="center">
+          No users found
+        </Typography>
+      )}
+    </Box>
   );
 }

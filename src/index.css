@@ -1,4 +1,4 @@
-:root {
+/* :root {
   --color-primary: #2563eb;
   --color-primary-hover: #1d4ed8;
   --color-background: #f9fafb;
@@ -20,8 +20,4 @@
   --color-muted: #9ca3af;
   --color-danger: #f87171;
   --color-danger-hover: #ef4444;
-}
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+} */

@@ -4,6 +4,14 @@ import { endpoints } from "@/utils/endpoints";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Paper,
+  Typography,
+} from "@mui/material";
 
 export default function Profile() {
   const [user, setUser] = useState<User | null>(null);
@@ -44,30 +52,48 @@ export default function Profile() {
     fetchUserProfile();
   }, [navigate]);
 
-  if (!user) return <p className="text-center mt-8">Loading...</p>;
+  if (!user) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="50vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="bg-surface rounded-xl shadow-lg w-full max-w-lg p-8 space-y-6">
-        <h1 className="text-3xl text-primary font-bold text-center">User Profile</h1>
-        <div className="space-y-4">
-          <p className="text-lg text-text">
-            <span className="font-semibold">Name:</span> {user.name}
-          </p>
-          <p className="text-lg text-text">
-            <span className="font-semibold">Email:</span> {user.email}
-          </p>
-        </div>
-        <button
+    <Container maxWidth="sm">
+      <Paper elevation={3} sx={{ p: 4, mt: 8, borderRadius: 4 }}>
+        <Typography variant="h4" component="h1" align="center" gutterBottom>
+          User Profile
+        </Typography>
+
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="body1" gutterBottom>
+            <strong>Name:</strong> {user.name}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            <strong>Email:</strong> {user.email}
+          </Typography>
+        </Box>
+
+        <Button
+          variant="contained"
+          color="error"
+          fullWidth
+          sx={{ mt: 4 }}
           onClick={() => {
             localStorage.removeItem("authToken");
             navigate("/login");
           }}
-          className="w-full mt-6 bg-danger text-white py-2 rounded-md hover:bg-danger-hover transition-colors text-sm font-medium"
         >
           Log Out
-        </button>
-      </div>
-    </div>
+        </Button>
+      </Paper>
+    </Container>
   );
 }

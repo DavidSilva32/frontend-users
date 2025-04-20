@@ -2,6 +2,15 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { endpoints } from "@/utils/endpoints";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 export default function Register() {
   const [inputData, setInputData] = useState({
@@ -64,64 +73,82 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-surface p-6 sm:p-8 rounded-2xl shadow-md w-full max-w-md space-y-4"
-      >
-        <h1 className="text-xl sm:text-2xl font-bold text-center">
+    <Container maxWidth="sm">
+      <Paper elevation={3} sx={{ p: 4, mt: 8, borderRadius: 4 }}>
+        <Typography variant="h4" component="h1" align="center" gutterBottom>
           Create Your Account
-        </h1>
+        </Typography>
 
-        <input
-          name="name"
-          type="text"
-          placeholder="Name"
-          className="w-full p-3 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-          value={inputData.name}
-          onChange={handleChange}
-        />
+        <form onSubmit={handleSubmit} noValidate>
+          <Box sx={{ mb: 2 }}>
+            <TextField
+              fullWidth
+              label="Name"
+              name="name"
+              value={inputData.name}
+              onChange={handleChange}
+              variant="outlined"
+              required
+            />
+          </Box>
 
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          className="w-full p-3 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-          value={inputData.email}
-          onChange={handleChange}
-        />
+          <Box sx={{ mb: 2 }}>
+            <TextField
+              fullWidth
+              label="Email"
+              name="email"
+              type="email"
+              value={inputData.email}
+              onChange={handleChange}
+              variant="outlined"
+              required
+            />
+          </Box>
 
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          className="w-full p-3 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-          value={inputData.password}
-          onChange={handleChange}
-        />
+          <Box sx={{ mb: 2 }}>
+            <TextField
+              fullWidth
+              label="Password"
+              name="password"
+              type="password"
+              value={inputData.password}
+              onChange={handleChange}
+              variant="outlined"
+              required
+            />
+          </Box>
 
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          className="w-full p-3 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
+          <Box sx={{ mb: 3 }}>
+            <TextField
+              fullWidth
+              label="Confirm Password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              variant="outlined"
+              required
+            />
+          </Box>
 
-        <button
-          type="submit"
-          className="w-full bg-primary text-white py-2 rounded-md hover:bg-primary-hover transition-colors text-sm font-medium"
-        >
-          {loading ? (
-            <div className="flex justify-center items-center gap-2">
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              Registering...
-            </div>
-          ) : (
-            "Register"
-          )}
-        </button>
-      </form>
-    </div>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mb: 2 }}
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? (
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <CircularProgress size={24} sx={{ mr: 2 }} />
+                Registering...
+              </Box>
+            ) : (
+              "Register"
+            )}
+          </Button>
+        </form>
+      </Paper>
+    </Container>
   );
 }
