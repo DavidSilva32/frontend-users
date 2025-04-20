@@ -1,6 +1,7 @@
 import { Link, Outlet } from "react-router-dom";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { getUserRoleFromToken } from "./utils/auth";
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -8,6 +9,12 @@ function App() {
   });
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const currentRole = getUserRoleFromToken();
+    setRole(currentRole);
+  }, [role]);
 
   useEffect(() => {
     if (isDarkMode) {
@@ -55,6 +62,11 @@ function App() {
             <Link to="/profile" className="hover:underline">
               Profile
             </Link>
+            {role === "ADMIN" && (
+              <Link to="/userList" className="hover:underline">
+                Users
+              </Link>
+            )}
           </nav>
 
           <button
@@ -100,6 +112,11 @@ function App() {
           <Link to="/profile" className="hover:underline" onClick={closeMenu}>
             Profile
           </Link>
+          {role === "ADMIN" && (
+            <Link to="/userList" className="hover:underline">
+              Users
+            </Link>
+          )}
         </nav>
       </div>
 

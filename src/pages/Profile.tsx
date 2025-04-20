@@ -44,13 +44,12 @@ export default function Profile() {
     fetchUserProfile();
   }, [navigate]);
 
-  if (!user)
-    return <div className="text-center mt-8 text-muted">Loading...</div>;
+  if (!user) return <p className="text-center mt-8">Loading...</p>;
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="bg-surface rounded-xl shadow-lg w-full max-w-lg p-8 space-y-6">
-        <h1 className="text-3xl font-bold text-center">User Profile</h1>
+        <h1 className="text-3xl text-primary font-bold text-center">User Profile</h1>
         <div className="space-y-4">
           <p className="text-lg text-text">
             <span className="font-semibold">Name:</span> {user.name}
