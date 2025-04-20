@@ -11,6 +11,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { apiRequest } from "@/utils/apiRequest";
+import { User } from "@/types";
 
 export default function Register() {
   const [inputData, setInputData] = useState({
@@ -44,21 +46,13 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const response = await fetch(endpoints.createUser, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(inputData),
-      });
+      const { message } = await apiRequest<User>(
+        endpoints.createUser,
+        "POST",
+        inputData
+      );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        toast.error(errorData.message || "Registration failed");
-        return;
-      }
-
-      toast.success("Account successfully created!");
+      toast.success(message || "Registration successful!");
       navigate("/login");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Unexpected error");

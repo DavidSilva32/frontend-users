@@ -21,7 +21,7 @@ export default function UserList() {
 
     const fetchUsers = async () => {
       try {
-        const data = await apiRequest<User[]>(
+        const {payload} = await apiRequest<User[]>(
           endpoints.listAllUsers,
           "GET",
           undefined,
@@ -30,8 +30,8 @@ export default function UserList() {
           }
         );
 
-        if (data) {
-          setUsers(data);
+        if (payload) {
+          setUsers(payload);
         }
       } catch (error) {
         toast.error(error instanceof Error ? error.message : "Unexpected error");

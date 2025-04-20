@@ -25,13 +25,13 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const data = await apiRequest<LoginData>(endpoints.login, "POST", {
+      const {payload} = await apiRequest<LoginData>(endpoints.login, "POST", {
         email,
         password,
       });
 
-      if (data) {
-        localStorage.setItem("authToken", data.token);
+      if (payload) {
+        localStorage.setItem("authToken", payload.token);
         navigate("/profile");
       }
     } catch (err) {

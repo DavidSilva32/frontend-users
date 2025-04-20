@@ -27,7 +27,7 @@ export default function Profile() {
 
     const fetchUserProfile = async () => {
       try {
-        const data = await apiRequest<User>(
+        const {payload} = await apiRequest<User>(
           endpoints.getProfile,
           "GET",
           undefined,
@@ -36,8 +36,8 @@ export default function Profile() {
           }
         );
 
-        if (data) {
-          setUser(data);
+        if (payload) {
+          setUser(payload);
         }
       } catch (error) {
         toast.error(

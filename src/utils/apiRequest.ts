@@ -28,7 +28,7 @@ export const apiRequest = async <T>(
       throw new Error(responseData.message || "Request failed");
     }
 
-    return responseData.payload;
+    return responseData;
   } catch (error) {
     throw new Error(
       error instanceof Error ? error.message : "Unexpected error"
