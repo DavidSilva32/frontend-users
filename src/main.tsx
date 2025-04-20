@@ -7,9 +7,9 @@ import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import { Toaster } from "react-hot-toast";
 import "./index.css";
+import Login from "./pages/login";
 import UserList from "./pages/userList";
 import { AuthProvider } from "./AuthContext";
-import Login from "./pages/login";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
