@@ -4,7 +4,6 @@ export function getUserRoleFromToken() {
 
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
-    console.log(payload);
     return payload.role;
   } catch (error) {
     return null;

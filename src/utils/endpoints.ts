@@ -1,6 +1,4 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "")
-console.log("API Base:", import.meta.env.VITE_API_BASE_URL);
-
 
 export const endpoints = {
   createUser: `${API_BASE}/user`,

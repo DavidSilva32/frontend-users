@@ -17,7 +17,6 @@ export default function Login() {
 
     try {
       const data = await apiRequest<LoginData>(endpoints.login, "POST", { email, password });
-      console.log(data);
 
       if (data) {
         localStorage.setItem("authToken", data.token);

@@ -46,14 +46,12 @@ export default function Register() {
       if (!response.ok) {
         const errorData = await response.json();
         toast.error(errorData.message || "Registration failed");
-        console.error("Registration error:", errorData);
         return;
       }
 
       toast.success("Account successfully created!");
       navigate("/login");
     } catch (err) {
-      console.error("Registration error:", err);
       toast.error(err instanceof Error ? err.message : "Unexpected error");
     } finally {
       setLoading(false);
