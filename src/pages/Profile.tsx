@@ -1,5 +1,6 @@
 import { User } from "@/types";
 import { apiRequest } from "@/utils/apiRequest";
+import { endpoints } from "@/utils/endpoints";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +20,7 @@ export default function Profile() {
     const fetchUserProfile = async () => {
       try {
         const data = await apiRequest<User>(
-          "http://localhost:3000/user/profile",
+          endpoints.getProfile,
           "GET",
           undefined,
           {
@@ -47,8 +48,8 @@ export default function Profile() {
     return <div className="text-center mt-8 text-muted">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-surface flex items-center justify-center px-4 py-8">
-      <div className="bg-white dark:bg-surface rounded-xl shadow-lg w-full max-w-lg p-8 space-y-6">
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="bg-surface rounded-xl shadow-lg w-full max-w-lg p-8 space-y-6">
         <h1 className="text-3xl font-bold text-center">User Profile</h1>
         <div className="space-y-4">
           <p className="text-lg text-text">

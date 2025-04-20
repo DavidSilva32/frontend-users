@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { endpoints } from "@/utils/endpoints";
 
 export default function Register() {
   const [inputData, setInputData] = useState({
@@ -34,7 +35,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/user", {
+      const response = await fetch(endpoints.createUser, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,7 +66,7 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+    <div className="min-h-screen flex items-center justify-center bg-background">
       <form
         onSubmit={handleSubmit}
         className="bg-surface p-6 sm:p-8 rounded-2xl shadow-md w-full max-w-md space-y-4"

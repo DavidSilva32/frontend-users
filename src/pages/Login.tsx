@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast"; // <--- Importa o toast
+import { toast } from "react-hot-toast";
 import { LoginData } from "@/types";
 import { apiRequest } from "@/utils/apiRequest";
+import { endpoints } from "@/utils/endpoints";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -15,7 +16,8 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const data = await apiRequest<LoginData>("http://localhost:3000/login", "POST", { email, password });
+      const data = await apiRequest<LoginData>(endpoints.login, "POST", { email, password });
+      console.log(data);
 
       if (data) {
         localStorage.setItem("authToken", data.token);
@@ -29,7 +31,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+    <div className="min-h-screen flex items-center justify-center bg-background">
       <form
         onSubmit={handleSubmit}
         className="bg-surface p-6 sm:p-8 rounded-2xl shadow-md w-full max-w-md space-y-4"
