@@ -37,6 +37,7 @@ export default function Login() {
         localStorage.setItem("authToken", payload.token);
         const user = getUserFromToken();
         setAuth({
+          id: user?.id ?? null,
           role: user?.role ?? null,
           name: user?.name ?? null,
           email: user?.email ?? null,

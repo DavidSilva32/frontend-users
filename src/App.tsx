@@ -21,7 +21,7 @@ import {
   ChevronRight,
 } from "@mui/icons-material";
 import { useMemo, useState, useEffect } from "react";
-import { Outlet, Link as RouterLink, useNavigate } from "react-router-dom";
+import { Outlet, Link as RouterLink } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import { getUserFromToken } from "@/utils/auth";
 import UserMenu from "./components/userMenu";
@@ -82,18 +82,36 @@ export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(
     () => localStorage.getItem("theme") === "dark"
   );
-  const { role, setAuth } = useAuth();
+  const { auth, setAuth } = useAuth();
   const theme = useTheme();
 
   useEffect(() => {
     const user = getUserFromToken();
+
     if (!user) {
-      setAuth({ role: null, name: null, email: null });
+      if (
+        auth.id !== null ||
+        auth.role !== null ||
+        auth.name !== null ||
+        auth.email !== null
+      ) {
+        setAuth({ id: null, role: null, name: null, email: null });
+      }
       return;
     }
-    const { role, name, email } = user;
-    setAuth({ role, name, email });
-  }, [setAuth]);
+
+    const { id, role, name, email } = user;
+
+    // Verifica se algum valor do estado auth mudou, evitando updates desnecessários
+    if (
+      auth.id !== id ||
+      auth.role !== role ||
+      auth.name !== name ||
+      auth.email !== email
+    ) {
+      setAuth({ id, role, name, email });
+    }
+  }, [auth, setAuth]); // Passa `auth` e `setAuth` como dependências
 
   const handleDrawerOpen = () => setOpen(true);
   const handleDrawerClose = () => setOpen(false);
@@ -166,7 +184,7 @@ export default function App() {
             <Button component={RouterLink} to="/register" color="inherit">
               Register
             </Button>
-            {role === "ADMIN" && (
+            {auth.role === "ADMIN" && (
               <Button component={RouterLink} to="/userList" color="inherit">
                 Users
               </Button>

@@ -17,8 +17,9 @@ function stringAvatar(name: string) {
 
 export default function UserMenu() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const { role, name, setAuth } = useAuth();
+  const { auth, setAuth } = useAuth();
   const navigate = useNavigate();
+  const { role, name } = auth;
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -30,7 +31,7 @@ export default function UserMenu() {
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
-    setAuth({ role: null, name: null, email: null });
+    setAuth({ id: null, role: null, name: null, email: null });
     handleClose();
     navigate("/login");
   };

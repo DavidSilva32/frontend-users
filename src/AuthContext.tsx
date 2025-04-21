@@ -1,30 +1,81 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { getUserFromToken } from "@/utils/auth";
+import { apiRequest } from "@/utils/apiRequest";
+import { endpoints } from "@/utils/endpoints";
+import { User } from "@/types";
 
-interface AuthContextType {
+interface AuthState {
+  id: string | null;
   role: string | null;
   name: string | null;
   email: string | null;
-  setAuth: (data: { role: string | null; name: string | null; email: string | null }) => void;
+}
+
+interface AuthContextType {
+  auth: AuthState;
+  setAuth: (data: AuthState) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const user = getUserFromToken();
-
-  const [authData, setAuthData] = useState({
-    role: user?.role ?? null,
-    name: user?.name ?? null,
-    email: user?.email ?? null,
+  const [auth, setAuthState] = useState<AuthState>({
+    id: null,
+    role: null,
+    name: null,
+    email: null,
   });
 
-  const setAuth = (data: { role: string | null; name: string | null; email: string | null }) => {
-    setAuthData(data);
+  useEffect(() => {
+    const user = getUserFromToken();
+    if (!user) return;
+
+    const fetchUserProfile = async () => {
+      try {
+        const { payload } = await apiRequest<User>(
+          endpoints.getProfile,
+          "GET",
+          undefined,
+          {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          }
+        );
+
+        if (payload) {
+          setAuthState({
+            id: user.id,
+            role: user.role,
+            email: user.email,
+            name: payload.name,
+          });
+        }
+      } catch (err) {
+        console.error("Failed to load user profile:", err);
+        localStorage.removeItem("authToken");
+        setAuthState({
+          id: null,
+          role: null,
+          name: null,
+          email: null,
+        });
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  const setAuth = (data: AuthState) => {
+    setAuthState(data);
   };
 
   return (
-    <AuthContext.Provider value={{ ...authData, setAuth }}>
+    <AuthContext.Provider value={{ auth, setAuth }}>
       {children}
     </AuthContext.Provider>
   );
