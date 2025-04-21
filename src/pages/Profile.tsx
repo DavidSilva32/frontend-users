@@ -12,10 +12,12 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
+import { useAuth } from "@/AuthContext";
 
 export default function Profile() {
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
+  const { setAuth } = useAuth();
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
@@ -27,7 +29,7 @@ export default function Profile() {
 
     const fetchUserProfile = async () => {
       try {
-        const {payload} = await apiRequest<User>(
+        const { payload } = await apiRequest<User>(
           endpoints.getProfile,
           "GET",
           undefined,
@@ -88,7 +90,9 @@ export default function Profile() {
           sx={{ mt: 4 }}
           onClick={() => {
             localStorage.removeItem("authToken");
+            setAuth({ role: null, name: null, email: null });
             navigate("/login");
+            toast.success("Logged out successfully");
           }}
         >
           Log Out

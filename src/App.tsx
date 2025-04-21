@@ -21,9 +21,10 @@ import {
   ChevronRight,
 } from "@mui/icons-material";
 import { useMemo, useState, useEffect } from "react";
-import { Outlet, Link as RouterLink } from "react-router-dom";
+import { Outlet, Link as RouterLink, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
-import { getUserRoleFromToken } from "./utils/auth";
+import { getUserFromToken } from "@/utils/auth";
+import UserMenu from "./components/userMenu";
 
 const drawerWidth = 240;
 
@@ -78,14 +79,21 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function App() {
   const [open, setOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem("theme") === "dark");
-  const { role, setRole } = useAuth();
+  const [isDarkMode, setIsDarkMode] = useState(
+    () => localStorage.getItem("theme") === "dark"
+  );
+  const { role, setAuth } = useAuth();
   const theme = useTheme();
 
   useEffect(() => {
-    const currentRole = getUserRoleFromToken();
-    setRole(currentRole);
-  }, [setRole]);
+    const user = getUserFromToken();
+    if (!user) {
+      setAuth({ role: null, name: null, email: null });
+      return;
+    }
+    const { role, name, email } = user;
+    setAuth({ role, name, email });
+  }, [setAuth]);
 
   const handleDrawerOpen = () => setOpen(true);
   const handleDrawerClose = () => setOpen(false);
@@ -128,6 +136,7 @@ export default function App() {
             <IconButton onClick={toggleDarkMode} color="inherit">
               {isDarkMode ? <Brightness7 /> : <Brightness4 />}
             </IconButton>
+            <UserMenu />
           </Toolbar>
         </AppBar>
 
@@ -151,11 +160,16 @@ export default function App() {
           </DrawerHeader>
           <Divider />
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1, p: 2 }}>
-            <Button component={RouterLink} to="/login" color="inherit">Login</Button>
-            <Button component={RouterLink} to="/register" color="inherit">Register</Button>
-            <Button component={RouterLink} to="/profile" color="inherit">Profile</Button>
+            <Button component={RouterLink} to="/login" color="inherit">
+              Login
+            </Button>
+            <Button component={RouterLink} to="/register" color="inherit">
+              Register
+            </Button>
             {role === "ADMIN" && (
-              <Button component={RouterLink} to="/userList" color="inherit">Users</Button>
+              <Button component={RouterLink} to="/userList" color="inherit">
+                Users
+              </Button>
             )}
           </Box>
         </Drawer>
@@ -163,7 +177,15 @@ export default function App() {
         <Main open={open}>
           <DrawerHeader />
           <Outlet />
-          <Box component="footer" sx={{ py: 2, textAlign: "center", mt: "auto", bgcolor: "background.paper" }}>
+          <Box
+            component="footer"
+            sx={{
+              py: 2,
+              textAlign: "center",
+              mt: "auto",
+              bgcolor: "background.paper",
+            }}
+          >
             <Typography variant="body2">&copy; 2025 My App</Typography>
           </Box>
         </Main>

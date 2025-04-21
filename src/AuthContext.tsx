@@ -1,23 +1,30 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { getUserRoleFromToken } from "@/utils/auth";
+import { createContext, useContext, useState, ReactNode } from "react";
+import { getUserFromToken } from "@/utils/auth";
 
 interface AuthContextType {
   role: string | null;
-  setRole: (role: string | null) => void;
+  name: string | null;
+  email: string | null;
+  setAuth: (data: { role: string | null; name: string | null; email: string | null }) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [role, setRole] = useState<string | null>(null);
+  const user = getUserFromToken();
 
-  useEffect(() => {
-    const currentRole = getUserRoleFromToken();
-    setRole(currentRole);
-  }, []);
+  const [authData, setAuthData] = useState({
+    role: user?.role ?? null,
+    name: user?.name ?? null,
+    email: user?.email ?? null,
+  });
+
+  const setAuth = (data: { role: string | null; name: string | null; email: string | null }) => {
+    setAuthData(data);
+  };
 
   return (
-    <AuthContext.Provider value={{ role, setRole }}>
+    <AuthContext.Provider value={{ ...authData, setAuth }}>
       {children}
     </AuthContext.Provider>
   );

@@ -13,11 +13,14 @@ import {
   Container,
   Paper,
 } from "@mui/material";
+import { getUserFromToken } from "@/utils/auth";
+import { useAuth } from "@/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { setAuth } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -25,13 +28,19 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const {payload} = await apiRequest<LoginData>(endpoints.login, "POST", {
+      const { payload } = await apiRequest<LoginData>(endpoints.login, "POST", {
         email,
         password,
       });
 
       if (payload) {
         localStorage.setItem("authToken", payload.token);
+        const user = getUserFromToken();
+        setAuth({
+          role: user?.role ?? null,
+          name: user?.name ?? null,
+          email: user?.email ?? null,
+        });
         navigate("/profile");
       }
     } catch (err) {
@@ -82,7 +91,13 @@ export default function Login() {
             disabled={loading}
           >
             {loading ? (
-              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
                 <CircularProgress size={24} sx={{ mr: 2 }} />
                 Logging in...
               </Box>

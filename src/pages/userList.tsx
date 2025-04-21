@@ -1,6 +1,6 @@
 import { User } from "@/types";
 import { apiRequest } from "@/utils/apiRequest";
-import { getUserRoleFromToken } from "@/utils/auth";
+import { getUserFromToken } from "@/utils/auth";
 import { endpoints } from "@/utils/endpoints";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -13,7 +13,8 @@ export default function UserList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const role = getUserRoleFromToken();
+    const user = getUserFromToken();
+    const role = user?.role;
     if (role !== "ADMIN") {
       navigate("/");
     }
