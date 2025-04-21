@@ -102,7 +102,6 @@ export default function App() {
 
     const { id, role, name, email } = user;
 
-    // Verifica se algum valor do estado auth mudou, evitando updates desnecessários
     if (
       auth.id !== id ||
       auth.role !== role ||
@@ -111,7 +110,7 @@ export default function App() {
     ) {
       setAuth({ id, role, name, email });
     }
-  }, [auth, setAuth]); // Passa `auth` e `setAuth` como dependências
+  }, [auth, setAuth]);
 
   const handleDrawerOpen = () => setOpen(true);
   const handleDrawerClose = () => setOpen(false);

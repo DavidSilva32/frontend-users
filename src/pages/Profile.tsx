@@ -1,6 +1,4 @@
 import { User } from "@/types";
-import { apiRequest } from "@/utils/apiRequest";
-import { endpoints } from "@/utils/endpoints";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
