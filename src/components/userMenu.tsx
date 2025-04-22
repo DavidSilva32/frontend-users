@@ -6,7 +6,7 @@ import { AccountCircle } from "@mui/icons-material";
 
 export default function UserMenu() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const { role } = useAuth();
+  const { setRole, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -19,6 +19,7 @@ export default function UserMenu() {
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
+    setRole(null); // Limpa o role no contexto
     handleClose();
     navigate("/login");
   };
@@ -28,7 +29,7 @@ export default function UserMenu() {
     navigate("/profile");
   };
 
-  if (!role) return null;
+  if (!isAuthenticated) return null; // A renderização depende de isAuthenticated
 
   return (
     <>

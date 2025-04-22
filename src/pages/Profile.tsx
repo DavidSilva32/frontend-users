@@ -80,7 +80,6 @@ export default function Profile() {
       setIsEditing(false);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Bad request");
-      console.error(error);
     }
   };
 

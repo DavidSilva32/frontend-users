@@ -22,14 +22,40 @@ export const apiRequest = async <T>(
     }
 
     const response = await fetch(url, options);
-    const responseData: ApiResponse<T> = await response.json();
+    const responseData: ApiResponse<T> | any = await response.json();
 
     if (!response.ok) {
-      throw new Error(responseData.message || "Request failed");
+      if (typeof responseData === "object" && responseData !== null) {
+        const { fields, message } = responseData;
+
+        let errorMessages = message || "Invalid data";
+        if (fields && typeof fields === "object") {
+          errorMessages +=
+            "\n" +
+            Object.entries(fields)
+              .map(([field, error]) => `${field}: ${error}`)
+              .join("\n");
+        }
+
+        throw new Error(errorMessages);
+      }
+
+      throw new Error(responseData?.message || "Request failed");
     }
 
     return responseData;
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message) {
+      const errorMessages = error.message.split("\n");
+      let formattedMessage = "";
+
+      errorMessages.forEach((msg: any) => {
+        formattedMessage += msg + "\n";
+      });
+
+      throw new Error(formattedMessage);
+    }
+
     throw new Error(
       error instanceof Error ? error.message : "Unexpected error"
     );

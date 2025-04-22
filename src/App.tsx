@@ -120,7 +120,7 @@ export default function App() {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" noWrap sx={{ flexGrow: 1 }}>
-              My App
+              User Management
             </Typography>
             <IconButton onClick={toggleDarkMode} color="inherit">
               {isDarkMode ? <Brightness7 /> : <Brightness4 />}
