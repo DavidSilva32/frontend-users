@@ -12,10 +12,10 @@ import {
 import { useAuth } from "@/AuthContext";
 import { apiRequest } from "@/utils/apiRequest";
 import { endpoints } from "@/utils/endpoints";
-import { getToken } from "@/utils/auth";
+import { getToken, decodeToken } from "@/utils/auth";
 
 export default function Profile() {
-  const { role } = useAuth();
+  const { role, setRole } = useAuth();
   const navigate = useNavigate();
 
   const [name, setName] = useState<string | null>(null);
@@ -27,6 +27,11 @@ export default function Profile() {
     if (!token) {
       navigate("/login");
       return;
+    }
+
+    const decoded = decodeToken();
+    if (decoded?.role) {
+      setRole(decoded.role);
     }
 
     const fetchProfile = async () => {
@@ -50,7 +55,7 @@ export default function Profile() {
     };
 
     fetchProfile();
-  }, [navigate]);
+  }, [navigate, setRole]);
 
   if (loading) {
     return (
