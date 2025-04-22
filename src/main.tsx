@@ -20,17 +20,17 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           toastOptions={{ duration: 3000, position: "bottom-center" }}
         />
         <Routes>
-          {/* Rota principal */}
+          {/* Main route */}
           <Route path="/" element={<App />}>
             <Route path="profile" element={<Profile />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
-            
-            {/* Rota de usuários (protegida) */}
+
+            {/* User route (protected) */}
             <Route path="userList" element={<UserList />} />
           </Route>
 
-          {/* Rota para o 404 */}
+          {/* Route to the 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

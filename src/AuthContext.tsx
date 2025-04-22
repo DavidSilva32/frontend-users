@@ -5,77 +5,30 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { getUserFromToken } from "@/utils/auth";
-import { apiRequest } from "@/utils/apiRequest";
-import { endpoints } from "@/utils/endpoints";
-import { User } from "@/types";
-
-interface AuthState {
-  id: string | null;
-  role: string | null;
-  name: string | null;
-  email: string | null;
-}
+import { decodeToken, getToken } from "@/utils/auth";
 
 interface AuthContextType {
-  auth: AuthState;
-  setAuth: (data: AuthState) => void;
+  role: string | null;
+  setRole: (role: string | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [auth, setAuthState] = useState<AuthState>({
-    id: null,
-    role: null,
-    name: null,
-    email: null,
-  });
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
-    const user = getUserFromToken();
-    if (!user) return;
+    const token = getToken();
+    if (!token) return;
 
-    const fetchUserProfile = async () => {
-      try {
-        const { payload } = await apiRequest<User>(
-          endpoints.getProfile,
-          "GET",
-          undefined,
-          {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-          }
-        );
+    const decoded = decodeToken();
+    if (!decoded) return;
 
-        if (payload) {
-          setAuthState({
-            id: user.id,
-            role: user.role,
-            email: user.email,
-            name: payload.name,
-          });
-        }
-      } catch (err) {
-        console.error("Failed to load user profile:", err);
-        localStorage.removeItem("authToken");
-        setAuthState({
-          id: null,
-          role: null,
-          name: null,
-          email: null,
-        });
-      }
-    };
-
-    fetchUserProfile();
+    setRole(decoded.role ?? null);
   }, []);
 
-  const setAuth = (data: AuthState) => {
-    setAuthState(data);
-  };
-
   return (
-    <AuthContext.Provider value={{ auth, setAuth }}>
+    <AuthContext.Provider value={{ role, setRole }}>
       {children}
     </AuthContext.Provider>
   );
@@ -83,8 +36,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
+  if (!context) throw new Error("useAuth must be used within an AuthProvider");
   return context;
 };

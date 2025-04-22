@@ -13,14 +13,11 @@ import {
   Container,
   Paper,
 } from "@mui/material";
-import { getUserFromToken } from "@/utils/auth";
-import { useAuth } from "@/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { setAuth } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,19 +30,12 @@ export default function Login() {
         password,
       });
 
-      if (payload) {
+      if (payload?.token) {
         localStorage.setItem("authToken", payload.token);
-        const user = getUserFromToken();
-        setAuth({
-          id: user?.id ?? null,
-          role: user?.role ?? null,
-          name: user?.name ?? null,
-          email: user?.email ?? null,
-        });
         navigate("/profile");
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Unexpected error");
+      toast.error(err instanceof Error ? err.message : "Erro inesperado");
     } finally {
       setLoading(false);
     }
@@ -55,7 +45,7 @@ export default function Login() {
     <Container maxWidth="sm">
       <Paper elevation={3} sx={{ p: 4, mt: 8, borderRadius: 4 }}>
         <Typography variant="h4" component="h1" align="center" gutterBottom>
-          Login to Your Account
+          Login
         </Typography>
 
         <form onSubmit={handleSubmit} noValidate>

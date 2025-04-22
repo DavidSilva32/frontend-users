@@ -1,28 +1,34 @@
 import { User } from "@/types";
 import { apiRequest } from "@/utils/apiRequest";
-import { getUserFromToken } from "@/utils/auth";
+import { getToken } from "@/utils/auth";
 import { endpoints } from "@/utils/endpoints";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { Box, Card, CardContent, CircularProgress, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
+import { useAuth } from "@/AuthContext";
 
 export default function UserList() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { role } = useAuth();
 
   useEffect(() => {
-    const user = getUserFromToken();
-    const role = user?.role;
     if (role !== "ADMIN") {
       navigate("/");
     }
-    const token = localStorage.getItem("authToken");
+    const token = getToken();
 
     const fetchUsers = async () => {
       try {
-        const {payload} = await apiRequest<User[]>(
+        const { payload } = await apiRequest<User[]>(
           endpoints.listAllUsers,
           "GET",
           undefined,
@@ -35,7 +41,9 @@ export default function UserList() {
           setUsers(payload);
         }
       } catch (error) {
-        toast.error(error instanceof Error ? error.message : "Unexpected error");
+        toast.error(
+          error instanceof Error ? error.message : "Unexpected error"
+        );
       } finally {
         setLoading(false);
       }
@@ -61,7 +69,10 @@ export default function UserList() {
 
   return (
     <Box sx={{ maxWidth: 1200, margin: "auto", mt: 4, p: 3 }}>
-      <Typography variant="h4" sx={{ fontWeight: "bold", textAlign: "center", mb: 4 }}>
+      <Typography
+        variant="h4"
+        sx={{ fontWeight: "bold", textAlign: "center", mb: 4 }}
+      >
         Lista de Usuários
       </Typography>
 

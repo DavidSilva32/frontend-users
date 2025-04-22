@@ -1,7 +1,6 @@
-import { User } from "@/types";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   Box,
   Button,
@@ -11,58 +10,49 @@ import {
   Typography,
 } from "@mui/material";
 import { useAuth } from "@/AuthContext";
+import { apiRequest } from "@/utils/apiRequest";
+import { endpoints } from "@/utils/endpoints";
+import { getToken } from "@/utils/auth";
 
 export default function Profile() {
-  const [user, setUser] = useState<User | null>(null);
-  const { auth, setAuth } = useAuth();
+  const { role } = useAuth();
   const navigate = useNavigate();
 
+  const [name, setName] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    if (auth.name && auth.email) {
-      setUser({
-        id: auth.id as string,
-        name: auth.name,
-        email: auth.email,
-      });
-    } else {
-      const token = localStorage.getItem("authToken");
-
-      if (!token) {
-        navigate("/login");
-        return;
-      }
-
-      // const fetchUserProfile = async () => {
-      //   try {
-      //     const { payload } = await apiRequest<User>(
-      //       endpoints.getProfile,
-      //       "GET",
-      //       undefined,
-      //       {
-      //         Authorization: `Bearer ${token}`,
-      //       }
-      //     );
-
-      //     if (payload) {
-      //       setUser(payload);
-      //       setAuth({
-      //         role: payload.role,
-      //         name: payload.name,
-      //         email: payload.email,
-      //       });
-      //     }
-      //   } catch (error) {
-      //     toast.error(error instanceof Error ? error.message : "Unexpected error");
-      //     localStorage.removeItem("authToken");
-      //     navigate("/login");
-      //   }
-      // };
-
-      // fetchUserProfile();
+    const token = getToken();
+    if (!token) {
+      navigate("/login");
+      return;
     }
-  }, [auth,setUser, navigate]);
 
-  if (!user) {
+    const fetchProfile = async () => {
+      try {
+        const { payload } = await apiRequest<{ name: string; email: string }>(
+          endpoints.getProfile,
+          "GET",
+          undefined,
+          {
+            Authorization: `Bearer ${token}`,
+          }
+        );
+        setName(payload.name);
+        setEmail(payload.email);
+      } catch (error) {
+        toast.error("Erro ao carregar perfil");
+        navigate("/login");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [navigate]);
+
+  if (loading) {
     return (
       <Box
         display="flex"
@@ -78,16 +68,19 @@ export default function Profile() {
   return (
     <Container maxWidth="sm">
       <Paper elevation={3} sx={{ p: 4, mt: 8, borderRadius: 4 }}>
-        <Typography variant="h4" component="h1" align="center" gutterBottom>
+        <Typography variant="h4" align="center" gutterBottom>
           User Profile
         </Typography>
 
         <Box sx={{ mt: 4 }}>
           <Typography variant="body1" gutterBottom>
-            <strong>Name:</strong> {user.name}
+            <strong>Name:</strong> {name}
           </Typography>
           <Typography variant="body1" gutterBottom>
-            <strong>Email:</strong> {user.email}
+            <strong>Email:</strong> {email}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            <strong>Role:</strong> {role}
           </Typography>
         </Box>
 
@@ -98,7 +91,6 @@ export default function Profile() {
           sx={{ mt: 4 }}
           onClick={() => {
             localStorage.removeItem("authToken");
-            setAuth({ id:null,role: null, name: null, email: null });
             navigate("/login");
             toast.success("Logged out successfully");
           }}

@@ -20,10 +20,9 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "@mui/icons-material";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { Outlet, Link as RouterLink } from "react-router-dom";
 import { useAuth } from "./AuthContext";
-import { getUserFromToken } from "@/utils/auth";
 import UserMenu from "./components/userMenu";
 
 const drawerWidth = 240;
@@ -82,35 +81,8 @@ export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(
     () => localStorage.getItem("theme") === "dark"
   );
-  const { auth, setAuth } = useAuth();
+  const { role } = useAuth();
   const theme = useTheme();
-
-  useEffect(() => {
-    const user = getUserFromToken();
-
-    if (!user) {
-      if (
-        auth.id !== null ||
-        auth.role !== null ||
-        auth.name !== null ||
-        auth.email !== null
-      ) {
-        setAuth({ id: null, role: null, name: null, email: null });
-      }
-      return;
-    }
-
-    const { id, role, name, email } = user;
-
-    if (
-      auth.id !== id ||
-      auth.role !== role ||
-      auth.name !== name ||
-      auth.email !== email
-    ) {
-      setAuth({ id, role, name, email });
-    }
-  }, [auth, setAuth]);
 
   const handleDrawerOpen = () => setOpen(true);
   const handleDrawerClose = () => setOpen(false);
@@ -183,7 +155,7 @@ export default function App() {
             <Button component={RouterLink} to="/register" color="inherit">
               Register
             </Button>
-            {auth.role === "ADMIN" && (
+            {role === "ADMIN" && (
               <Button component={RouterLink} to="/userList" color="inherit">
                 Users
               </Button>

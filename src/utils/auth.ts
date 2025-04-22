@@ -1,25 +1,14 @@
-import { jwtDecode } from "jwt-decode";
+export const getToken = () => {
+  return localStorage.getItem("authToken");
+};
 
-interface TokenPayload {
-  id: string;
-  role: string;
-  name: string;
-  email: string;
-}
-
-export function getUserFromToken(): TokenPayload | null {
-  const token = localStorage.getItem("authToken");
+export const decodeToken = () => {
+  const token = getToken();
   if (!token) return null;
 
   try {
-    const decoded = jwtDecode<TokenPayload>(token);
-    return {
-      id: decoded.id,
-      role: decoded.role,
-      name: decoded.name,
-      email: decoded.email,
-    };
+    return JSON.parse(atob(token.split(".")[1]));
   } catch {
     return null;
   }
-}
+};
