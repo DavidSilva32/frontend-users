@@ -12,6 +12,7 @@ import {
   ThemeProvider,
   useTheme,
 } from "@mui/material";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import { styled } from "@mui/material/styles";
 import {
   Brightness4,
@@ -21,7 +22,12 @@ import {
   ChevronRight,
 } from "@mui/icons-material";
 import { useMemo, useState } from "react";
-import { Outlet, Link as RouterLink } from "react-router-dom";
+import {
+  Outlet,
+  Link as RouterLink,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import UserMenu from "./components/userMenu";
 
@@ -83,6 +89,8 @@ export default function App() {
   );
   const { role } = useAuth();
   const theme = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleDrawerOpen = () => setOpen(true);
   const handleDrawerClose = () => setOpen(false);
@@ -165,7 +173,46 @@ export default function App() {
 
         <Main open={open}>
           <DrawerHeader />
-          <Outlet />
+
+          {location.pathname === "/" ? (
+            <Box
+              sx={{
+                p: 4,
+                textAlign: "center",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                flexGrow: 1,
+                gap: 3,
+              }}
+            >
+              <DashboardIcon sx={{ fontSize: 64, color: "primary.main" }} />
+              <Typography variant="h4" component="h1" fontWeight="bold">
+                Welcome to the User Dashboard
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{ maxWidth: 600, color: "text.secondary" }}
+              >
+                This is the user management system. Use the side menu to access
+                authentication, profile, and user administration features.
+                Optimize access control with ease.
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={() => navigate("/auth/login")}
+                sx={{ mt: 2 }}
+              >
+                Get Started
+              </Button>
+            </Box>
+          ) : (
+            <Outlet />
+          )}
+
           <Box
             component="footer"
             sx={{
@@ -175,7 +222,9 @@ export default function App() {
               bgcolor: "background.paper",
             }}
           >
-            <Typography variant="body2">&copy; 2025 My App</Typography>
+            <Typography variant="body2" color="text.secondary">
+              &copy; 2025 My App. Todos os direitos reservados.
+            </Typography>
           </Box>
         </Main>
       </Box>

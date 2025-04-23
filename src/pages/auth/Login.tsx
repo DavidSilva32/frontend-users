@@ -30,6 +30,8 @@ export default function Login() {
         password,
       });
 
+      console.log(payload);
+
       if (payload?.token) {
         localStorage.setItem("authToken", payload.token);
         navigate("/user/profile");

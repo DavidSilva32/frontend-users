@@ -19,6 +19,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const token = getToken();
+    console.log("Token:", token, "Role:", role);
     if (token && role) {
       setIsAuthenticated(true);
     } else {

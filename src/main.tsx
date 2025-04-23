@@ -22,14 +22,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         />
         <Routes>
           <Route path="/" element={<App />}>
-            {/* Auth routes */}
             <Route path="auth/login" element={<Login />} />
             <Route path="auth/register" element={<Register />} />
-            {/* User self-management */}
             <Route path="user/profile" element={<Profile />} />
-            {/* Admin section */}
             <Route path="admin/users" element={<UserList />} />
-            <Route path="admin/users/edit/:id" element={<EditUser />} />{" "}
+            <Route path="admin/users/edit/:id" element={<EditUser />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
