@@ -21,7 +21,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Delete, SortByAlpha } from "@mui/icons-material";
+import { Delete, Edit, SortByAlpha } from "@mui/icons-material";
 import { useAuth } from "@/AuthContext";
 
 export default function UserList() {
@@ -83,7 +83,7 @@ export default function UserList() {
     const token = getToken();
     if (!token) {
       toast.error("User not authenticated.");
-      navigate("/login");
+      navigate("/auth/login");
       return;
     }
 
@@ -169,6 +169,7 @@ export default function UserList() {
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
+                gap={2}
               >
                 <Box>
                   <Typography variant="h6" sx={{ fontWeight: "bold" }}>
@@ -179,20 +180,29 @@ export default function UserList() {
                   </Typography>
                   <Chip
                     label={user.role}
-                    color={user.role === "ADMIN" ? "primary" : "default"}
+                    color={user.role === "ADMIN" ? "primary" : "secondary"}
                     size="small"
                     sx={{ mt: 1 }}
                   />
                 </Box>
 
-                <Button
-                  variant="outlined"
-                  color="error"
-                  startIcon={<Delete />}
-                  onClick={() => openDeleteDialog(user.id)}
-                >
-                  Delete
-                </Button>
+                <Box display="flex" gap={1}>
+                  <Button
+                    variant="outlined"
+                    startIcon={<Edit />}
+                    onClick={() => navigate(`/admin/users/edit/${user.id}`)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    startIcon={<Delete />}
+                    onClick={() => openDeleteDialog(user.id)}
+                  >
+                    Delete
+                  </Button>
+                </Box>
               </Box>
             </CardContent>
           </Card>

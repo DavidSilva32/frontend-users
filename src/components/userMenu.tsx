@@ -19,17 +19,17 @@ export default function UserMenu() {
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
-    setRole(null); // Limpa o role no contexto
+    setRole(null);
     handleClose();
-    navigate("/login");
+    navigate("/auth/login");
   };
 
   const handleGoToProfile = () => {
     handleClose();
-    navigate("/profile");
+    navigate("/user/profile");
   };
 
-  if (!isAuthenticated) return null; // A renderização depende de isAuthenticated
+  if (!isAuthenticated) return null;
 
   return (
     <>

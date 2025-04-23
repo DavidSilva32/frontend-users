@@ -53,7 +53,7 @@ export default function Register() {
       );
 
       toast.success(message || "Registration successful!");
-      navigate("/login");
+      navigate("/auth/login");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Unexpected error");
     } finally {

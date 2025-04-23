@@ -32,7 +32,7 @@ export default function Login() {
 
       if (payload?.token) {
         localStorage.setItem("authToken", payload.token);
-        navigate("/profile");
+        navigate("/user/profile");
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro inesperado");

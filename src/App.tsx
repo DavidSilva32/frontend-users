@@ -149,14 +149,14 @@ export default function App() {
           </DrawerHeader>
           <Divider />
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1, p: 2 }}>
-            <Button component={RouterLink} to="/login" color="inherit">
+            <Button component={RouterLink} to="auth/login" color="inherit">
               Login
             </Button>
-            <Button component={RouterLink} to="/register" color="inherit">
+            <Button component={RouterLink} to="auth/register" color="inherit">
               Register
             </Button>
             {role === "ADMIN" && (
-              <Button component={RouterLink} to="/userList" color="inherit">
+              <Button component={RouterLink} to="admin/users" color="inherit">
                 Users
               </Button>
             )}

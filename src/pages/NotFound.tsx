@@ -32,7 +32,7 @@ export default function NotFound() {
       <Button
         variant="contained"
         color="primary"
-        onClick={() => navigate("/login")}
+        onClick={() => navigate("/auth/login")}
         sx={{
           fontSize: "0.875rem",
           paddingX: 4,
