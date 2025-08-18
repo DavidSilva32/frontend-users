@@ -20,9 +20,13 @@ import {
   IconButton,
   TextField,
   Typography,
+  Container,
+  Grid,
+  useMediaQuery,
 } from "@mui/material";
 import { Delete, Edit, SortByAlpha } from "@mui/icons-material";
 import { useAuth } from "@/AuthContext";
+import { useTheme } from "@mui/material/styles";
 
 export default function UserList() {
   const [users, setUsers] = useState<User[]>([]);
@@ -33,6 +37,8 @@ export default function UserList() {
   const [userIdToDelete, setUserIdToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
   const { role } = useAuth();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // <600px
 
   useEffect(() => {
     if (role !== "ADMIN") {
@@ -134,84 +140,159 @@ export default function UserList() {
   }
 
   return (
-    <Box sx={{ maxWidth: 1200, margin: "auto", mt: 4, p: 3 }}>
+    <Container maxWidth="md" sx={{ mt: isMobile ? 2 : 4, p: isMobile ? 1 : 3 }}>
       <Box
         sx={{
           display: "flex",
-          alignItems: "center",
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: isMobile ? "stretch" : "center",
           gap: 2,
           mb: 3,
           flexWrap: "wrap",
         }}
       >
-        <Typography variant="h4" sx={{ fontWeight: "bold", flexGrow: 1 }}>
+        <Typography
+          variant={isMobile ? "h5" : "h4"}
+          sx={{ fontWeight: "bold", flexGrow: 1, mb: isMobile ? 2 : 0 }}
+        >
           User List
         </Typography>
 
-        <IconButton onClick={() => setSortAsc(!sortAsc)}>
-          <SortByAlpha />
-        </IconButton>
-
-        <TextField
-          size="small"
-          label="Search"
-          variant="outlined"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexDirection: isMobile ? "column" : "row",
+            width: isMobile ? "100%" : "auto",
+          }}
+        >
+          <IconButton onClick={() => setSortAsc(!sortAsc)}>
+            <SortByAlpha />
+          </IconButton>
+          <TextField
+            size="small"
+            label="Search"
+            variant="outlined"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            sx={{ flex: 1 }}
+          />
+        </Box>
       </Box>
 
-      {filteredUsers.length > 0 ? (
-        filteredUsers.map((user) => (
-          <Card key={user.id} sx={{ mb: 2 }}>
-            <CardContent>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                gap={2}
+      <Grid container spacing={isMobile ? 1 : 3}>
+        {filteredUsers.length > 0 ? (
+          filteredUsers.map((user) => (
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              key={user.id}
+              sx={{
+                display: "flex",
+              }}
+            >
+              <Card
+                sx={{
+                  mb: isMobile ? 1 : 3,
+                  width: "100%",
+                  minHeight: isMobile ? 180 : 260,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "stretch",
+                }}
               >
-                <Box>
-                  <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                    {user.name}
-                  </Typography>
-                  <Typography variant="body1" color="textSecondary">
-                    Email: {user.email}
-                  </Typography>
-                  <Chip
-                    label={user.role}
-                    color={user.role === "ADMIN" ? "primary" : "secondary"}
-                    size="small"
-                    sx={{ mt: 1 }}
-                  />
-                </Box>
+                <CardContent
+                  sx={{
+                    p: isMobile ? 2 : 3,
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column", // sempre coluna
+                    alignItems: "stretch",
+                    justifyContent: "space-between",
+                    gap: 2,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      minWidth: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+                      {user.name}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      color="textSecondary"
+                      sx={{ mb: 1 }}
+                    >
+                      Email: {user.email}
+                    </Typography>
+                    <Box sx={{ mt: 2 }}>
+                      <Chip
+                        label={user.role}
+                        color={user.role === "ADMIN" ? "primary" : "secondary"}
+                        size={isMobile ? "small" : "medium"}
+                        sx={{
+                          fontSize: isMobile ? "0.75rem" : "1rem",
+                          height: isMobile ? 24 : 36,
+                          px: isMobile ? 1 : 2,
+                          minWidth: 90,
+                          maxWidth: 140,
+                          flexShrink: 0,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      />
+                    </Box>
+                  </Box>
 
-                <Box display="flex" gap={1}>
-                  <Button
-                    variant="outlined"
-                    startIcon={<Edit />}
-                    onClick={() => navigate(`/admin/users/edit/${user.id}`)}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row", // botões em linha, mas embaixo dos dados
+                      gap: 2,
+                      justifyContent: "flex-end",
+                      alignItems: "center",
+                      width: "100%",
+                      mt: 2,
+                    }}
                   >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    startIcon={<Delete />}
-                    onClick={() => openDeleteDialog(user.id)}
-                  >
-                    Delete
-                  </Button>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-        ))
-      ) : (
-        <Typography variant="body1" color="textSecondary" align="center">
-          No users found
-        </Typography>
-      )}
+                    <Button
+                      variant="outlined"
+                      startIcon={<Edit />}
+                      onClick={() => navigate(`/admin/users/edit/${user.id}`)}
+                      fullWidth={isMobile}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      startIcon={<Delete />}
+                      onClick={() => openDeleteDialog(user.id)}
+                      fullWidth={isMobile}
+                    >
+                      Delete
+                    </Button>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))
+        ) : (
+          <Grid item xs={12}>
+            <Typography variant="body1" color="textSecondary" align="center">
+              No users found
+            </Typography>
+          </Grid>
+        )}
+      </Grid>
 
       {/* Dialog for delete confirmation */}
       <Dialog open={openDialog} onClose={closeDialog}>
@@ -229,6 +310,6 @@ export default function UserList() {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </Container>
   );
 }
