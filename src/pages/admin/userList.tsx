@@ -38,7 +38,7 @@ export default function UserList() {
   const navigate = useNavigate();
   const { role } = useAuth();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // <600px
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     if (role !== "ADMIN") {
@@ -208,7 +208,7 @@ export default function UserList() {
                     p: isMobile ? 2 : 3,
                     height: "100%",
                     display: "flex",
-                    flexDirection: "column", // sempre coluna
+                    flexDirection: "column",
                     alignItems: "stretch",
                     justifyContent: "space-between",
                     gap: 2,
@@ -255,7 +255,7 @@ export default function UserList() {
                   <Box
                     sx={{
                       display: "flex",
-                      flexDirection: "row", // botões em linha, mas embaixo dos dados
+                      flexDirection: "row",
                       gap: 2,
                       justifyContent: "flex-end",
                       alignItems: "center",
