@@ -25,7 +25,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const { payload } = await apiRequest<LoginData>(endpoints.login, "POST", {
+      const { message, payload } = await apiRequest<LoginData>(endpoints.login, "POST", {
         email,
         password,
       });
@@ -34,6 +34,8 @@ export default function Login() {
         localStorage.setItem("authToken", payload.token);
         navigate("/user/profile");
       }
+
+      toast.success(message || "Login successful!")
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro inesperado");
     } finally {
