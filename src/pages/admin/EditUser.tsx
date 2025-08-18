@@ -99,7 +99,6 @@ export default function EditUser() {
         formData={userData}
         onChange={handleChange}
         onSubmit={handleSubmit}
-        title="Edit User"
         isEditing={true}
       />
     </Box>

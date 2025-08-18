@@ -7,7 +7,7 @@ interface UserFormProps {
   formData: UserFormData;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: () => void;
-  title: string;
+  title?: string;
   isEditing: boolean;
   onCancel?: () => void;
   onEdit?: () => void;
@@ -34,7 +34,7 @@ export default function UserForm({
 
   return (
     <Box sx={{ maxWidth: 600, mx: "auto", mt: 4 }}>
-      <h2>{title}</h2>
+      {title && <h2>{title}</h2>}
 
       <TextField
         fullWidth
