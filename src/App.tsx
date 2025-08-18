@@ -157,14 +157,44 @@ export default function App() {
           </DrawerHeader>
           <Divider />
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1, p: 2 }}>
-            <Button component={RouterLink} to="auth/login" color="inherit">
+            <Button
+              component={RouterLink}
+              to="auth/login"
+              color="inherit"
+              sx={{
+                "&:hover": {
+                  backgroundColor: "primary.main",
+                  color: "white",
+                },
+              }}
+            >
               Login
             </Button>
-            <Button component={RouterLink} to="auth/register" color="inherit">
+            <Button
+              component={RouterLink}
+              to="auth/register"
+              color="inherit"
+              sx={{
+                "&:hover": {
+                  backgroundColor: "primary.main",
+                  color: "white",
+                },
+              }}
+            >
               Register
             </Button>
             {role === "ADMIN" && (
-              <Button component={RouterLink} to="admin/users" color="inherit">
+              <Button
+                component={RouterLink}
+                to="admin/users"
+                color="inherit"
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "primary.main",
+                    color: "white",
+                  },
+                }}
+              >
                 Users
               </Button>
             )}
